@@ -15,12 +15,13 @@ $('#add_question_form').on('submit', function (event) {
   $.ajax({
     url: backendURL + 'insert-question.php',
     method: 'POST',
+    headers: localStorage.getItem("token"),
     data: $(this).serialize(),
     success: function (data) {
       refreshQuestionTable()
     },
-    error: function (xhr, status, error) {
-      showAlert('error', 'Error', xhr.responseJSON.message)
+    error: function (error) {
+console.log(error)
     }
   })
 })
@@ -29,8 +30,8 @@ function getHtmlForQuestions(question, rowNum)     {
   return `<tr>
     <td>` + rowNum + `</td>
      <td>` + question.name + `</td>
-      <td><button style="margin-left:1em" onclick="deleteQuestion(this)" class="btn btn-light btn-sm " data-id="` + question.id + `">Delete</button></td>
-       <td><a href="answer.html?id=` + question.id + ` "class="btn btn-light btn-sm" > Check</a> </td>`
+      <td><button onclick="deleteQuestion(this)" class="btn  btn-sm add " data-id="` + question.id + `">Delete</button></td>
+       <td><a href="answer.html?id=` + question.id + ` "class="btn  btn-sm add" > Check</a> </td>`
 }
 
 const addQuestionInTable = function (question) {
@@ -47,12 +48,14 @@ function refreshQuestionTable () {
   $.ajax({
     url: backendURL + 'get-question.php',
     method: 'get',
+    headers: {
+      Authorization: localStorage.getItem("token")},
     success: function (data) {
       tbody.html('')
-      data.questions.forEach((question) => tbody.append(addQuestionInTable(question)))
+      data.message.questions.forEach((question) => tbody.append(addQuestionInTable(question)))
     },
-    error: function (xhr, status, error) {
-      showAlert('error', 'Error', xhr.responseJSON.message)
+    error: function (error) {
+      console.log(error)
     }
   })
 }
@@ -63,6 +66,7 @@ const deleteQuestion = function (button) {
   $.ajax({
     url: backendURL + 'delete-question.php',
     method: 'post',
+    headers: localStorage.getItem("token"),
     data: {
       id: id
     },

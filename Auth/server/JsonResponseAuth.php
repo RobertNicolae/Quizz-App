@@ -1,12 +1,12 @@
 <?php
 
 
-class instance
+class jsonResponseAuth
 {
 protected int $code;
 protected string $message;
 
-public function getCode($code, $message): void
+public function displayResponse($code, $message): void
 {
 
     http_response_code($code);

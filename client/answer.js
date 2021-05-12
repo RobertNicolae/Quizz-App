@@ -18,7 +18,8 @@ const showAlert = function (type, title, message) {
     $.ajax({
       url: '/server/insert-answer.php',
       method: 'post',
-
+      headers: {
+        Authorization: localStorage.getItem("token")},
       data: {
         answer_name: formData.get('answer_name'),
         question_id: idQuestion
@@ -27,9 +28,7 @@ const showAlert = function (type, title, message) {
         showAlert('success', 'Answer added', 'You successfully add answer')
         refreshAnswerTable()
       },
-      error: function (xhr, status, error) {
-        showAlert('error', 'Error', xhr.responseJSON.message)
-      }
+
     })
   })
 
@@ -51,16 +50,17 @@ const showAlert = function (type, title, message) {
     $.ajax({
       url: '/server/get-answers.php',
       method: 'get',
+      headers: {
+        Authorization: localStorage.getItem("token")},
       data: {
         question_id: idQuestion
       },
       success: function (data) {
         $('#answers tbody').html('')
-        data.answers.forEach(answer => addAnswerInTable(answer))
+        console.log(data)
+        data.message.answers.forEach(answer => addAnswerInTable(answer))
       },
-      error: function (xhr, status, error) {
-        showAlert('error', 'Error', xhr.responseJSON.message)
-      }
+
     })
   }
 
@@ -83,11 +83,10 @@ const showAlert = function (type, title, message) {
         id: id
       },
       success: function () {
+        showAlert('success', 'Answer deleted', 'You successfully deleted an answer')
         refreshAnswerTable()
       },
-      error: function (xhr, status, error) {
-        showAlert('error', 'Error', xhr.responseJSON.message)
-      }
+
     })
   }
   const markAsCorrect = function (button) {
@@ -103,9 +102,7 @@ const showAlert = function (type, title, message) {
       success: function () {
         refreshAnswerTable()
       },
-      error: function (xhr, status, error) {
-        showAlert('error', 'Error', xhr.responseJSON.message)
-      }
+
     })
   }
 
